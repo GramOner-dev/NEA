@@ -1,3 +1,5 @@
 *.dll
 *.pdb
 *.cache
+obj/Debug/net8.0/NEA.AssemblyInfo.cs
+obj/Debug/net8.0/NEA.sourcelink.json
