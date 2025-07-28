@@ -3,3 +3,8 @@
 *.cache
 obj/Debug/net8.0/NEA.AssemblyInfo.cs
 obj/Debug/net8.0/NEA.sourcelink.json
+*.dll
+*.pdb
+obj/Debug/net8.0/NEA.AssemblyInfo.cs
+*.cache
+obj/Debug/net8.0/NEA.sourcelink.json
