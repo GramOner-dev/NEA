@@ -20,21 +20,14 @@ public static class TestNetwork
 
         Matrix logits = network.Forward(input);
         Matrix prediction = MathsUtils.Softmax(logits);
-
-        input.PrintShape();
-        target.PrintShape();
-        logits.PrintShape();
-        prediction.PrintShape();
         Console.WriteLine("Prediction:");
         PrintMatrix(prediction.Transpose());
-        PrintMatrix(target);
+
         float loss = MathsUtils.CrossEntropyLoss(prediction, target);
         Matrix grad = MathsUtils.CrossEntropyGradient(prediction, target);
 
         Console.WriteLine($"\nLoss: {loss}");
         network.Backward(grad);
-
-        Console.WriteLine("\nBackpropagation complete.");
     }
 
     private static Matrix GenerateInput(int size)
