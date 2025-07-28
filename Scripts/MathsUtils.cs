@@ -3,7 +3,7 @@ using System;
 public static class MathsUtils {
     private static Random random = new Random();
 
-    public static double NextGaussian(double mean = 0, double stddev = 1){   
+    public static float NextGaussian(double mean = 0, double stddev = 1){   
         double epsilon = 1e-10;
         double r1 = random.NextDouble() + epsilon; 
         double r2 = random.NextDouble() + epsilon;
@@ -13,7 +13,7 @@ public static class MathsUtils {
 
     public static float[] HeInit(int numOfInputs){
         float[] weights = new float[numOfInputs];
-        float stdDev = Math.Sqrt(2.0 / numOfInputs);
+        float stdDev = (float)Math.Sqrt(2.0 / numOfInputs);
         for(int i = 0; i < numOfInputs; i++)
             weights[i] = NextGaussian(0, stdDev);
         
@@ -48,10 +48,10 @@ public static class MathsUtils {
 
     private static float LeakyReLUnegativeGradient = 0.001f;
 
-    public float LeakyReLU(float value) => 
+    public static float LeakyReLU(float value) => 
         value > 0 ? value : LeakyReLUnegativeGradient * value;
 
-    public float LeakyReLUDeriv(float value) =>
+    public static float LeakyReLUDeriv(float value) =>
         value > 0 ? 1 : LeakyReLUnegativeGradient;
 }
 
