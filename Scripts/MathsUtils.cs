@@ -26,53 +26,47 @@ public static class MathsUtils
     public static Matrix Softmax(Matrix input)
     {
         int rows = input.GetLength(0);
-        int cols = input.GetLength(1);
-        Matrix result = new Matrix(rows, cols);
+
+        Matrix result = new Matrix(rows, 1);
+        float max = float.NegativeInfinity;
+
+        for (int i = 0; i < rows; i++)
+            if (input[i, 0] > max)
+                max = input[i, 0];
+
+        float sum = 0f;
+        float[] exps = new float[rows];
 
         for (int i = 0; i < rows; i++)
         {
-            float[] row = input[i];
-
-            float max = row.Max();
-
-            float[] exps = new float[cols];
-            float sum = 0f;
-
-            for (int j = 0; j < cols; j++)
-            {
-                exps[j] = (float)Math.Exp(row[j] - max);
-                sum += exps[j];
-            }
-
-            for (int j = 0; j < cols; j++)
-            {
-                result[i, j] = exps[j] / sum;
-            }
+            exps[i] = (float)Math.Exp(input[i, 0] - max);
+            sum += exps[i];
         }
+
+        for (int i = 0; i < rows; i++)
+            result[i, 0] = exps[i] / sum;
 
         return result;
     }
 
-    public static float MSE(Matrix prediction, Matrix target)
+    public static float CrossEntropyLoss(Matrix probs, Matrix oneHotTarget)
     {
-        float sum = 0f;
-        for (int i = 0; i < prediction.GetLength(0); i++)
-        {
-            float diff = prediction[i, 0] - target[i, 0];
-            sum += diff * diff;
-        }
-        return sum / prediction.GetLength(0);
+        oneHotTarget = oneHotTarget.Transpose();
+        int targetIndex = Array.IndexOf(oneHotTarget[0], 1f);
+        Console.WriteLine(targetIndex);
+        float predictedProb = probs[targetIndex, 0];
+
+        float loss = -MathF.Log(predictedProb + 1e-9f);
+        return loss;
     }
 
-    public static Matrix MSEGradient(Matrix prediction, Matrix target)
+    public static Matrix CrossEntropyGradient(Matrix probs, Matrix oneHotTarget)
     {
-        int rows = prediction.GetLength(0);
-        Matrix grad = new Matrix(rows, 1);
 
-        for (int i = 0; i < rows; i++)
-            grad[i, 0] = 2 * (prediction[i, 0] - target[i, 0]) / rows;
+        for (int i = 0; i < probs.GetLength(0); i++)
+            probs[i, 0] -= oneHotTarget[i, 0];
 
-        return grad;
+        return probs;
     }
 
     private static float LeakyReLUnegativeGradient = 0.001f;

@@ -18,16 +18,17 @@ public static class TestNetwork
 
         // Generate a single random input and target
         Matrix input = GenerateInput(32);
-        Matrix target = GenerateTarget(3);
+        Matrix target = GenerateOneHotTarget(3);
 
         // Forward pass
-        Matrix prediction = network.Forward(input);  // assume you make forward() public or use wrapper
+        Matrix logits = network.Forward(input);
+        Matrix prediction = MathsUtils.Softmax(logits);
         Console.WriteLine("Prediction:");
         PrintMatrix(prediction);
 
         // Compute MSE and its gradient
-        float loss = MathsUtils.MSE(prediction, target);
-        Matrix grad = MathsUtils.MSEGradient(prediction, target);
+        float loss = MathsUtils.CrossEntropyLoss(logits, target);
+        Matrix grad = MathsUtils.CrossEntropyGradient(logits, target);
 
         Console.WriteLine($"\nLoss: {loss}");
 
@@ -46,12 +47,12 @@ public static class TestNetwork
         return new Matrix(data).Transpose(); // shape (size, 1)
     }
 
-    private static Matrix GenerateTarget(int size)
+    private static Matrix GenerateOneHotTarget(int size)
     {
         float[] data = new float[size];
         Random rand = new Random();
-        for (int i = 0; i < size; i++)
-            data[i] = (float)(rand.NextDouble()); // values in [0, 1]
+        int hotIndex = rand.Next(size); // Choose one index to be hot
+        data[hotIndex] = 1f;            // One-hot encoding
         return new Matrix(data).Transpose(); // shape (size, 1)
     }
 
