@@ -174,4 +174,9 @@ public class Matrix
     }
 
     public (int Rows, int Columns) Shape() => (rowNum, colNum);
+
+    public void PrintShape()
+    {
+        Console.WriteLine($"Shape: ({rowNum}, {colNum})");
+    }
 }

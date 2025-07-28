@@ -12,28 +12,27 @@ public static class TestNetwork
 {
     public static void Run()
     {
-        // Define network topology: 3 inputs, 2 hidden, 1 output
         int[] topology = { 32, 5, 3 };
         Network network = new Network(topology);
 
-        // Generate a single random input and target
         Matrix input = GenerateInput(32);
         Matrix target = GenerateOneHotTarget(3);
 
-        // Forward pass
         Matrix logits = network.Forward(input);
         Matrix prediction = MathsUtils.Softmax(logits);
-        Console.WriteLine("Prediction:");
-        PrintMatrix(prediction);
 
-        // Compute MSE and its gradient
-        float loss = MathsUtils.CrossEntropyLoss(logits, target);
-        Matrix grad = MathsUtils.CrossEntropyGradient(logits, target);
+        input.PrintShape();
+        target.PrintShape();
+        logits.PrintShape();
+        prediction.PrintShape();
+        Console.WriteLine("Prediction:");
+        PrintMatrix(prediction.Transpose());
+        PrintMatrix(target);
+        float loss = MathsUtils.CrossEntropyLoss(prediction, target);
+        Matrix grad = MathsUtils.CrossEntropyGradient(prediction, target);
 
         Console.WriteLine($"\nLoss: {loss}");
-
-        // Backward pass
-        network.Backward(grad);  // assume you make backward() public or use wrapper
+        network.Backward(grad);
 
         Console.WriteLine("\nBackpropagation complete.");
     }
@@ -43,7 +42,7 @@ public static class TestNetwork
         float[] data = new float[size];
         Random rand = new Random();
         for (int i = 0; i < size; i++)
-            data[i] = (float)(rand.NextDouble() * 2 - 1); // values in [-1, 1]
+            data[i] = (float)(rand.NextDouble() * 2 - 1);
         return new Matrix(data).Transpose(); // shape (size, 1)
     }
 
@@ -51,8 +50,8 @@ public static class TestNetwork
     {
         float[] data = new float[size];
         Random rand = new Random();
-        int hotIndex = rand.Next(size); // Choose one index to be hot
-        data[hotIndex] = 1f;            // One-hot encoding
+        int hotIndex = rand.Next(size);
+        data[hotIndex] = 1f;
         return new Matrix(data).Transpose(); // shape (size, 1)
     }
 

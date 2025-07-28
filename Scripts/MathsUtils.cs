@@ -46,6 +46,8 @@ public static class MathsUtils
         for (int i = 0; i < rows; i++)
             result[i, 0] = exps[i] / sum;
 
+        Console.WriteLine("softmax:");
+        result.PrintShape();
         return result;
     }
 
@@ -53,9 +55,7 @@ public static class MathsUtils
     {
         oneHotTarget = oneHotTarget.Transpose();
         int targetIndex = Array.IndexOf(oneHotTarget[0], 1f);
-        Console.WriteLine(targetIndex);
         float predictedProb = probs[targetIndex, 0];
-
         float loss = -MathF.Log(predictedProb + 1e-9f);
         return loss;
     }
