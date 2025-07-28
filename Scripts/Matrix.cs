@@ -121,6 +121,13 @@ public class Matrix
         return result;
     }
 
+    public void Fill(float value)
+    {
+        for (int i = 0; i < rowNum; i++)
+            for (int j = 0; j < colNum; j++)
+                matrix[i, j] = value;
+    }
+
     public Matrix HeInit()
     {
         for (int i = 0; i < rowNum; i++)

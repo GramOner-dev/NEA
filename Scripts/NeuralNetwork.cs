@@ -52,7 +52,7 @@ public class Layer
     private Matrix biasGradients;
     private Matrix input, logits, output;
     private bool isOutputLayer;
-    private AdamW weightsOptimizer, biasOptimizer;
+    private AdamW WeightsOptimizer, BiasOptimizer;
 
     public Matrix GetWeights() => weights;
     public Matrix SetWeights(Matrix weights) => this.weights = weights;
@@ -80,8 +80,8 @@ public class Layer
 
         this.isOutputLayer = isOutputLayer;
 
-        weightsOptimizer = new AdamW(weights, weightGradients);
-        biasOptimizer = new AdamW(biases, biasGradients);
+        WeightsOptimizer = new AdamW(weights, weightGradients);
+        BiasOptimizer = new AdamW(biases, biasGradients);
 
     }
 
@@ -113,7 +113,7 @@ public class Layer
 
     public void UpdateParams()
     {
-        weightsOptimizer.Update();
-        biasOptimizer.Update();
+        WeightsOptimizer.Update();
+        BiasOptimizer.Update();
     }
 }
