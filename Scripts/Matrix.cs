@@ -91,7 +91,8 @@ public class Matrix
         int bColNum = b.GetLength(1);
 
         if (aRowNum != bRowNum || aColNum != bColNum)
-            throw new ArgumentException("matrix dimensions must match for additio");
+            throw new ArgumentException(
+                $"Matrix dimension mismatch: A is {aRowNum}x{aColNum}, B is {bRowNum}x{bColNum}. Dimensions must match for addition.");
 
         Matrix result = new Matrix(aRowNum, aColNum);
 
@@ -108,7 +109,7 @@ public class Matrix
 
     public Matrix Apply(Func<float, float> func)
     {
-        Matrix result = new Matrix(colNum, rowNum);
+        Matrix result = new Matrix(rowNum, colNum);
 
         for (int i = 0; i < rowNum; i++)
         {
@@ -171,6 +172,6 @@ public class Matrix
         if (dimension == 1) return colNum;
         throw new ArgumentException("invalid dimension, use 0 for rows, 1 for columns");
     }
-    
+
     public (int Rows, int Columns) Shape() => (rowNum, colNum);
 }

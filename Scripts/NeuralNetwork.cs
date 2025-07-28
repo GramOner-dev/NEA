@@ -17,7 +17,7 @@ public class Network
         }
     }
 
-    private Matrix Forward(Matrix input)
+    public Matrix Forward(Matrix input)
     {
         Matrix currentOutput = input;
 
@@ -37,7 +37,7 @@ public class Network
         return RecursiveBackprop(layerIndex - 1, dLdInput);
     }
 
-    private Matrix Backward(Matrix dLdOutput)
+    public Matrix Backward(Matrix dLdOutput)
     {
         inputGradients = RecursiveBackprop(layers.Length - 1, dLdOutput);
         return inputGradients;
@@ -88,9 +88,9 @@ public class Layer
     public Matrix Forward(Matrix input)
     {
         this.input = input;
-        this.logits = (weights * input) + biases.Transpose();
+        this.logits = (weights * input) + biases;
         if (!isOutputLayer)
-            this.output = logits.Apply(x => MathsUtils.LeakyReLU(x));
+            this.output = logits.Apply(MathsUtils.LeakyReLU);
         else
             this.output = logits;
 
