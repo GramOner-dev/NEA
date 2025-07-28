@@ -1,0 +1,14 @@
+/Users/nn/Documents/src/NEA/bin/Debug/net8.0/NEA
+/Users/nn/Documents/src/NEA/bin/Debug/net8.0/NEA.deps.json
+/Users/nn/Documents/src/NEA/bin/Debug/net8.0/NEA.runtimeconfig.json
+/Users/nn/Documents/src/NEA/bin/Debug/net8.0/NEA.dll
+/Users/nn/Documents/src/NEA/bin/Debug/net8.0/NEA.pdb
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/NEA.GeneratedMSBuildEditorConfig.editorconfig
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/NEA.AssemblyInfoInputs.cache
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/NEA.AssemblyInfo.cs
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/NEA.csproj.CoreCompileInputs.cache
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/NEA.dll
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/refint/NEA.dll
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/NEA.pdb
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/NEA.genruntimeconfig.cache
+/Users/nn/Documents/src/NEA/obj/Debug/net8.0/ref/NEA.dll
