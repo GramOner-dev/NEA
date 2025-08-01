@@ -13,16 +13,42 @@ public static class MathsUtils
         return (float)(mean + stddev * randStdNormal);
     }
 
-    public static float[] HeInit(int numOfInputs)
+    public static Matrix HeInit(int rowNum, int colNum)
     {
-        float[] weights = new float[numOfInputs];
-        float stdDev = (float)Math.Sqrt(2.0 / numOfInputs);
-        for (int i = 0; i < numOfInputs; i++)
-            weights[i] = NextGaussian(0, stdDev);
+        var matrix = new Matrix(rowNum, colNum);
+        float stdDev = (float)Math.Sqrt(2.0 / colNum);
 
-        return weights;
+        for (int i = 0; i < rowNum; i++)
+        {
+            float[] row = new float[colNum];
+            for (int j = 0; j < colNum; j++)
+                row[j] = NextGaussian(0, stdDev);
+
+            for (int j = 0; j < colNum; j++)
+                matrix[i, j] = row[j];
+        }
+
+        return matrix;
     }
 
+    public static Matrix XavierInit(int rowNum, int colNum)
+    {
+        var matrix = new Matrix(rowNum, colNum);
+        float limit = (float)Math.Sqrt(6.0 / (rowNum + colNum));
+
+        var rand = new Random();
+        for (int i = 0; i < rowNum; i++)
+        {
+            float[] row = new float[colNum];
+            for (int j = 0; j < colNum; j++)
+                row[j] = (float)(rand.NextDouble() * 2 * limit - limit);
+
+            for (int j = 0; j < colNum; j++)
+                matrix[i, j] = row[j];
+        }
+
+        return matrix;
+    }
     public static Matrix Softmax(Matrix input)
     {
         int rows = input.GetLength(0);

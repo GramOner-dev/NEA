@@ -3,8 +3,7 @@ using System;
 public class Network
 {
     private Layer[] layers;
-    private Matrix? inputGradients;
-
+    private Matrix inputGradients;
     public Network(int[] topology)
     {
         layers = new Layer[topology.Length - 1];
@@ -46,33 +45,14 @@ public class Network
 
 public class Layer
 {
-    private Matrix weights;
-    private Matrix weightGradients;
-    private Matrix biases;
-    private Matrix biasGradients;
+
     private Matrix input, logits, output;
     private bool isOutputLayer;
-    private AdamW WeightsOptimizer, BiasOptimizer;
-
-    public Matrix GetWeights() => weights;
-    public Matrix SetWeights(Matrix weights) => this.weights = weights;
-
-    public Matrix GetWeightGradients() => weightGradients;
-    public Matrix SetWeightGradients(Matrix weightGradients) => this.weightGradients = weightGradients;
-
-    public Matrix GetBiases() => biases;
-    public Matrix SetBiases(Matrix biases) => this.biases = biases;
-
-    public Matrix GetBiasGradients() => biasGradients;
-    public Matrix SetBiasGradients(Matrix biasGradients) => this.biasGradients = biasGradients;
-
+    private LayerNormalizer LayerNorm;
+    private WeightBiasPair Weights;
     public Layer(int numOfInputs, int numOfNeurons, bool isOutputLayer)
     {
-        weights = new Matrix(numOfNeurons, numOfInputs).HeInit();
-        weightGradients = new Matrix(numOfNeurons, numOfInputs);
-
-        biases = new Matrix(numOfNeurons);
-        biasGradients = new Matrix(numOfNeurons);
+        Weights = new WeightBiasPair(numOfInputs, numOfNeurons, InitType.He);
 
         input = new Matrix(numOfInputs);
         logits = new Matrix(numOfInputs, numOfNeurons);
@@ -80,40 +60,50 @@ public class Layer
 
         this.isOutputLayer = isOutputLayer;
 
-        WeightsOptimizer = new AdamW(weights, weightGradients);
-        BiasOptimizer = new AdamW(biases, biasGradients);
-
+        LayerNorm = new LayerNormalizer(numOfNeurons);
     }
 
     public Matrix Forward(Matrix input)
     {
         this.input = input;
-        this.logits = (weights * input) + biases;
+        logits = Weights.Forward(input);
         if (!isOutputLayer)
-            this.output = logits.Apply(MathsUtils.LeakyReLU);
+        {
+            Matrix normalized = LayerNorm.Forward(logits);
+            output = normalized.Apply(MathsUtils.LeakyReLU);
+        }
         else
-            this.output = logits;
-
+        {
+            output = logits;
+        }
         return output;
     }
 
     public Matrix Backward(Matrix nextLayerGradients)
     {
-        Matrix dLdPreActivation = nextLayerGradients.Hadamard(logits.Apply(MathsUtils.LeakyReLUDeriv));
+        Matrix dLdPreActivation;
 
         if (!isOutputLayer)
-            dLdPreActivation = nextLayerGradients;
-        Matrix dLdWeights = dLdPreActivation * input.Transpose();
-        this.weightGradients = dLdWeights;
-        this.biasGradients = dLdPreActivation;
+        {
+            Matrix normalized = LayerNorm.GetNormalizedInputs();
+            Matrix dLdActivation = nextLayerGradients.Hadamard(normalized.Apply(MathsUtils.LeakyReLUDeriv));
 
-        Matrix dLdInput = weights.Transpose() * dLdPreActivation;
+            dLdPreActivation = LayerNorm.Backward(dLdActivation);
+        }
+        else
+        {
+            dLdPreActivation = nextLayerGradients;
+        }
+        Matrix dLdWeights = dLdPreActivation * input.Transpose();
+        Weights.SetWeightGradients(dLdWeights);
+        Weights.SetBiasGradients(dLdPreActivation);
+
+        Matrix dLdInput = Weights.GetWeights().Transpose() * dLdPreActivation;
         return dLdInput;
     }
 
     public void UpdateParams()
     {
-        WeightsOptimizer.Update();
-        BiasOptimizer.Update();
+        Weights.Update();
     }
 }

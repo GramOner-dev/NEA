@@ -63,7 +63,8 @@ public class Matrix
         int bColNum = b.GetLength(1);
 
         if (aColNum != bRowNum)
-            throw new ArgumentException("matrix dimensions must match for multiplication");
+            throw new ArgumentException(
+                $"Matrix dimension mismatch: A is {aRowNum}x{aColNum} B is {bRowNum}x{bColNum} whcih is invalid for multiplication");
 
         Matrix result = new Matrix(aRowNum, bColNum);
 
@@ -92,7 +93,7 @@ public class Matrix
 
         if (aRowNum != bRowNum || aColNum != bColNum)
             throw new ArgumentException(
-                $"Matrix dimension mismatch: A is {aRowNum}x{aColNum}, B is {bRowNum}x{bColNum}. Dimensions must match for addition.");
+                $"Matrix dimension mismatch: A is {aRowNum}x{aColNum} B is {bRowNum}x{bColNum} which is invalid for addition");
 
         Matrix result = new Matrix(aRowNum, aColNum);
 
@@ -128,18 +129,7 @@ public class Matrix
                 matrix[i, j] = value;
     }
 
-    public Matrix HeInit()
-    {
-        for (int i = 0; i < rowNum; i++)
-        {
-            float[] row = MathsUtils.HeInit(colNum);
-            for (int j = 0; j < colNum; j++)
-            {
-                matrix[i, j] = row[j];
-            }
-        }
-        return this;
-    }
+
 
     public Matrix Transpose()
     {
@@ -184,6 +174,39 @@ public class Matrix
 
     public void PrintShape()
     {
-        Console.WriteLine($"Shape: ({rowNum}, {colNum})");
+        Console.WriteLine($"Shape - {rowNum}, {colNum}");
+    }
+
+    public static Matrix BroadcastColumn(Matrix columnVector, int numCols)
+    {
+        if (columnVector.GetLength(1) != 1)
+            throw new ArgumentException("input must be a column vector with shape n, 1");
+
+        int numRows = columnVector.GetLength(0);
+        Matrix result = new Matrix(numRows, numCols);
+
+        for (int i = 0; i < numRows; i++)
+        {
+            float value = columnVector[i, 0];
+            for (int j = 0; j < numCols; j++)
+            {
+                result[i, j] = value;
+            }
+        }
+
+        return result;
+    }
+
+    public void SetMatrix(Matrix source)
+    {
+        if (GetLength(0) != source.GetLength(0) || GetLength(1) != source.GetLength(1))
+            throw new ArgumentException("source and target matrices must have the same dimensions.");
+
+        int rows = GetLength(0);
+        int cols = GetLength(1);
+
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
+                this[i, j] = source[i, j];
     }
 }

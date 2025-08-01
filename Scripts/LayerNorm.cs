@@ -75,7 +75,7 @@ public class LayerNormalizer
         int seqLen = gradOutput.GetLength(0);
         int hiddenDim = gradOutput.GetLength(1);
 
-        Matrix gradInput = new Matrix(seqLen, hiddenDim);
+        Matrix dLdOutput = new Matrix(seqLen, hiddenDim);
         GammaGrads.Fill(0f);
         BetaGrads.Fill(0f);
 
@@ -95,10 +95,10 @@ public class LayerNormalizer
             float gradMean = CalculateGradMean(row, mean, variance, gradNormalized, gradVariance);
 
             float[] gradInputRow = CalculateGradInputRow(row, mean, stdDev, gradNormalized, gradVariance, gradMean);
-            gradInput[i] = gradInputRow;
+            dLdOutput[i] = gradInputRow;
         }
 
-        return gradInput;
+        return dLdOutput;
     }
 
     public void UpdateWeights()
@@ -107,6 +107,7 @@ public class LayerNormalizer
         BetaOptimizer.Update();
     }
 
+    public Matrix GetNormalizedInputs() => normalizedInputs;
     private float CalculateMean(float[] row)
     {
         float sum = 0f;
