@@ -4,6 +4,8 @@ public class Matrix
 {
     private float[,] matrix;
     private int rowNum, colNum;
+
+    #region ConstructorOverrides
     public Matrix(int rowNum, int colNum)
     {
         this.matrix = new float[rowNum, colNum];
@@ -29,9 +31,18 @@ public class Matrix
 
     }
 
-    public Matrix(float[,] matrix) => this.matrix = matrix;
+    public Matrix(float[,] matrix)
+    {
+        this.matrix = matrix;
+    }
 
+    public Matrix()
+    {
+        this.matrix = new float[1, 1];
+    }
+    #endregion
 
+    #region arrayAccessors
     public float this[int row, int col]
     {
         get => matrix[row, col];
@@ -53,7 +64,9 @@ public class Matrix
                 matrix[row, j] = value[j];
         }
     }
+    #endregion
 
+    #region operatorOverrides
     public static Matrix operator *(Matrix a, Matrix b)
     {
 
@@ -107,7 +120,9 @@ public class Matrix
 
         return result;
     }
+    #endregion
 
+    #region matrixFunctions
     public Matrix Apply(Func<float, float> func)
     {
         Matrix result = new Matrix(rowNum, colNum);
@@ -128,7 +143,6 @@ public class Matrix
             for (int j = 0; j < colNum; j++)
                 matrix[i, j] = value;
     }
-
 
 
     public Matrix Transpose()
@@ -163,37 +177,17 @@ public class Matrix
         return result;
     }
 
-    public int GetLength(int dimension)
+    public Matrix RowWiseSum()
     {
-        if (dimension == 0) return rowNum;
-        if (dimension == 1) return colNum;
-        throw new ArgumentException("invalid dimension, use 0 for rows, 1 for columns");
-    }
+        Matrix result = new Matrix(rowNum, 1);
 
-    public (int Rows, int Columns) Shape() => (rowNum, colNum);
-
-    public void PrintShape()
-    {
-        Console.WriteLine($"Shape - {rowNum}, {colNum}");
-    }
-
-    public static Matrix BroadcastColumn(Matrix columnVector, int numCols)
-    {
-        if (columnVector.GetLength(1) != 1)
-            throw new ArgumentException("input must be a column vector with shape n, 1");
-
-        int numRows = columnVector.GetLength(0);
-        Matrix result = new Matrix(numRows, numCols);
-
-        for (int i = 0; i < numRows; i++)
+        for (int i = 0; i < rowNum; i++)
         {
-            float value = columnVector[i, 0];
-            for (int j = 0; j < numCols; j++)
-            {
-                result[i, j] = value;
-            }
+            float sum = 0f;
+            for (int j = 0; j < colNum; j++)
+                sum += matrix[i, j];
+            result[i, 0] = sum;
         }
-
         return result;
     }
 
@@ -209,4 +203,22 @@ public class Matrix
             for (int j = 0; j < cols; j++)
                 this[i, j] = source[i, j];
     }
+    #endregion
+
+    #region matrixDimFunctions
+    public int GetLength(int dimension)
+    {
+        if (dimension == 0) return rowNum;
+        if (dimension == 1) return colNum;
+        throw new ArgumentException("invalid dimension, use 0 for rows, 1 for columns");
+    }
+
+    public (int Rows, int Columns) Shape() => (rowNum, colNum);
+
+    public void PrintShape()
+    {
+        Console.WriteLine($"shape - {rowNum}, {colNum}");
+    }
+    #endregion
+
 }
