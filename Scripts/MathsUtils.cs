@@ -96,8 +96,6 @@ public static class MathsUtils
     }
     #endregion
 
-
-
     #region MeanPooling
     public static Matrix MeanPool(Matrix input)
     {

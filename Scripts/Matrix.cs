@@ -203,6 +203,25 @@ public class Matrix
             for (int j = 0; j < cols; j++)
                 this[i, j] = source[i, j];
     }
+    public static Matrix BroadcastColumn(Matrix columnVector, int numCols)
+    {
+        if (columnVector.GetLength(1) != 1)
+            throw new ArgumentException("ionput isnt in shape (n, 1) for broadcasting.");
+
+        int numRows = columnVector.GetLength(0);
+        Matrix result = new Matrix(numRows, numCols);
+
+        for (int i = 0; i < numRows; i++)
+        {
+            float value = columnVector[i, 0];
+            for (int j = 0; j < numCols; j++)
+            {
+                result[i, j] = value;
+            }
+        }
+
+        return result;
+    }
     #endregion
 
     #region matrixDimFunctions
