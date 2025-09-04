@@ -105,8 +105,7 @@ public class Matrix
         int bColNum = b.GetLength(1);
 
         if (aRowNum != bRowNum || aColNum != bColNum)
-            throw new ArgumentException(
-                $"Matrix dimension mismatch: A is {aRowNum}x{aColNum} B is {bRowNum}x{bColNum} which is invalid for addition");
+            throw new ArgumentException($"matrix dimension mismatch - A: {aRowNum}x{aColNum}, B: {bRowNum}x{bColNum}. Invalid for addition");
 
         Matrix result = new Matrix(aRowNum, aColNum);
 
@@ -160,10 +159,10 @@ public class Matrix
 
     public Matrix Hadamard(Matrix matrixB)
     {
-        int bRowNum = matrixB.GetLength(0);
-        int bColNum = matrixB.GetLength(1);
+        int rowNum = matrixB.GetLength(0);
+        int colNum = matrixB.GetLength(1);
 
-        if (this.rowNum != bRowNum || this.colNum != bColNum)
+        if (this.rowNum != rowNum || this.colNum != colNum)
             throw new ArgumentException("matrix dimensions must match for additio");
 
         Matrix result = new Matrix(this.rowNum, this.colNum);
@@ -206,7 +205,7 @@ public class Matrix
     public static Matrix BroadcastColumn(Matrix columnVector, int numCols)
     {
         if (columnVector.GetLength(1) != 1)
-            throw new ArgumentException("ionput isnt in shape (n, 1) for broadcasting.");
+            throw new ArgumentException("input isnt in shape (n, 1) for broadcasting.");
 
         int numRows = columnVector.GetLength(0);
         Matrix result = new Matrix(numRows, numCols);

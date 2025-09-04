@@ -4,16 +4,28 @@ public class Network
 {
     private Layer[] layers;
     private Matrix inputGradients;
-    public Network(int[] topology)
+    public Network(int inputDim, int[] hidLayers, int outputDim)
     {
+        int[] topology = CreateTopology(inputDim, hidLayers, outputDim);
         layers = new Layer[topology.Length - 1];
+        InitLayers(topology);
         inputGradients = new Matrix(topology[0]);
+    }
 
+    private void InitLayers(int[] topology)
+    {
         for (int i = 1; i < topology.Length; i++)
         {
             bool isOutputLayer = i == topology.Length - 1;
             layers[i - 1] = new Layer(topology[i - 1], topology[i], isOutputLayer);
         }
+    }
+    private int[] CreateTopology(int inputDim, int[] hidLayers, int outputDim)
+    {
+        List<int> list = new List<int>(hidLayers);
+        list.Insert(0, inputDim);
+        list.Add(outputDim);
+        return list.ToArray();
     }
 
     public Matrix Forward(Matrix input)

@@ -4,18 +4,41 @@ class Program
 {
     static void Main(string[] args)
     {
-        LayerNormTest.Run();
+
     }
 }
+public class ModelInstance
+{
+    #region TransformerConfig
+    public SelfAttention Transformer;
+    public int inputDim;
+    public int maxSeqLen;
+    #endregion
 
+    #region NNConfig
+    public Network NNetwork;
+    #endregion
+
+    //make ModelConfig class later, allows to change through reference during runtime instead of remaking model
+    //might make reshaping the weights and things difficult so maybe i will just make a new model.
+    //will need to make sure garbage collection 100% works as otherwise memory leak might occur from millions of weights
+    public ModelInstance(int inputDim, int headDim, int maxSeqLen, int[] hiddenLayersTopology, int outputDim)
+    {
+        this.inputDim = inputDim;
+        this.maxSeqLen = maxSeqLen;
+        Transformer = new SelfAttention(inputDim, headDim, maxSeqLen);
+
+        NNetwork = new Network(headDim, hiddenLayersTopology, outputDim);
+    }
+
+
+}
 public static class TestNetwork
-
-
 {
     public static void Run()
     {
-        int[] topology = { 32, 5, 3 };
-        Network network = new Network(topology);
+        int[] hiddenLayersTopology = { 5, 5 };
+        Network network = new Network(32, hiddenLayersTopology, 3);
 
         Matrix input = GenerateInput(32);
         Matrix target = GenerateOneHotTarget(3);
@@ -70,7 +93,7 @@ public static class LayerNormTest
 {
     public static void Run()
     {
-        Console.WriteLine("Running LayerNormalizer test...");
+        Console.WriteLine("LayerNormTest");
 
         int seqLen = 4;
         int hiddenDim = 5;
@@ -88,33 +111,30 @@ public static class LayerNormTest
             }
         }
 
-        Console.WriteLine("Input:");
+        Console.WriteLine("ionput-");
         PrintMatrix(input);
 
 
         Matrix output = norm.Forward(input);
-        Console.WriteLine("\nOutput after LayerNorm:");
+        Console.WriteLine("\noutput after LayerNorm:");
         PrintMatrix(output);
 
-
-        Random random = new Random();
         Matrix gradOutput = new Matrix(seqLen, hiddenDim);
-        gradOutput = gradOutput.Apply(x => (float)random.NextDouble());
+        gradOutput = gradOutput.Apply(x => (float)rand.NextDouble());
 
 
         Matrix gradInput = norm.Backward(gradOutput);
-        Console.WriteLine("\nGradInput:");
+        Console.WriteLine("\ninput gradient-:");
         PrintMatrix(gradInput);
 
 
         norm.UpdateWeights();
 
-        Console.WriteLine("\nGamma after update:");
+        Console.WriteLine("\ngamma after update");
         PrintMatrix(norm.Gamma);
-        Console.WriteLine("\nBeta after update:");
+        Console.WriteLine("\nbeta after update");
         PrintMatrix(norm.Beta);
 
-        Console.WriteLine("\nLayerNormalizer test complete.");
     }
 
     private static void PrintMatrix(Matrix m)

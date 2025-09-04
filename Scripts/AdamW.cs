@@ -30,16 +30,16 @@ public class AdamW
     }
 
 
-    public float getUnbiasedFirstMoment(float moment) =>
+    private float getUnbiasedFirstMoment(float moment) =>
         moment / (1 - (float)Math.Pow(beta1, timestep));
 
-    public float getUnbiasedSecondMoment(float moment) =>
+    private float getUnbiasedSecondMoment(float moment) =>
         moment / (1 - (float)Math.Pow(beta2, timestep));
 
-    public float getUpdatedFirstMoment(float moment, float grad) =>
+    private float getUpdatedFirstMoment(float moment, float grad) =>
         beta1 * moment + (1 - beta1) * grad;
 
-    public float getUpdatedSecondMoment(float moment, float grad) =>
+    private float getUpdatedSecondMoment(float moment, float grad) =>
         beta2 * moment + (1 - beta2) * grad * grad;
 
 

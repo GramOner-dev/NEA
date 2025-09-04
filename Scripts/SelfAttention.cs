@@ -1,4 +1,4 @@
-class SelfAttention
+public class SelfAttention
 {
     private WeightBiasPair QueryProjection;
     private WeightBiasPair KeyProjection;
@@ -62,14 +62,20 @@ class SelfAttention
         Matrix dLdQueries = keys * dLdAttentionScores.Transpose();
         Matrix dLdKeys = queries * dLdAttentionScores;
 
-        QueryProjection.SetWeightGradients(dLdQueries * input.Transpose());
-        QueryProjection.SetBiasGradients(dLdQueries.RowWiseSum());
+        Matrix QueryWeightGrads = dLdQueries * input.Transpose();
+        Matrix QueryBiasGrads = dLdQueries.RowWiseSum();
+        QueryProjection.SetWeightGradients(QueryWeightGrads);
+        QueryProjection.SetBiasGradients(QueryBiasGrads);
 
-        KeyProjection.SetWeightGradients(dLdKeys * input.Transpose());
-        KeyProjection.SetBiasGradients(dLdKeys.RowWiseSum());
+        Matrix KeyWeightGrads = dLdKeys * input.Transpose();
+        Matrix KeyBiasGrads = dLdKeys.RowWiseSum();
+        KeyProjection.SetWeightGradients(KeyWeightGrads);
+        KeyProjection.SetBiasGradients(KeyBiasGrads);
 
-        ValueProjection.SetWeightGradients(dLdValues * input.Transpose());
-        ValueProjection.SetBiasGradients(dLdValues.RowWiseSum());
+        Matrix ValueWeightGrads = dLdValues * input.Transpose();
+        Matrix ValueBiasGrads = dLdValues.RowWiseSum();
+        ValueProjection.SetWeightGradients(ValueWeightGrads);
+        ValueProjection.SetBiasGradients(ValueBiasGrads);
     }
 
     public void Update()
@@ -87,6 +93,4 @@ class SelfAttention
         float dotProdScaling = (float)Math.Sqrt(Query.GetLength(0));
         return (Query.Transpose() * KeyT).Apply(x => x / dotProdScaling);
     }
-
-
 }
