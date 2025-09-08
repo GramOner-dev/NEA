@@ -72,6 +72,7 @@ public class LayerNormalizer
 
     public Matrix Backward(Matrix gradOutput)
     {
+        gradOutput = gradOutput.Transpose();
         int seqLen = gradOutput.GetLength(0);
         int hiddenDim = gradOutput.GetLength(1);
 
@@ -81,9 +82,12 @@ public class LayerNormalizer
 
         for (int i = 0; i < seqLen; i++)
         {
+            Console.WriteLine("---");
+            Console.WriteLine(i);
             float[] row = inputs[i];
             float[] gradOutRow = gradOutput[i];
             float[] normRow = normalizedInputs[i];
+            Console.WriteLine(means.Length);
             float mean = means[i];
             float variance = variances[i];
             float stdDev = (float)Math.Sqrt(variance + epsilon);
@@ -172,6 +176,7 @@ public class LayerNormalizer
 
     private float CalculateGradVariance(float[] row, float mean, float variance, float[] gradNormalized)
     {
+
         float gradVariance = 0f;
         for (int j = 0; j < row.Length; j++)
         {

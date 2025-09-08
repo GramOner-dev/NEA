@@ -54,27 +54,27 @@ public class SelfAttention
     public void Backward(Matrix dLdOutput)
     {
         Matrix dLdNormed = MathsUtils.ExpandGradThroughMeanPool(dLdOutput, normed.GetLength(1));
-        Matrix dLdContext = LayerNorm.Backward(dLdNormed);
+        Matrix dLdContext = LayerNorm.Backward(dLdNormed.Transpose());
 
-        Matrix dLdValues = dLdContext.Transpose() * values.Transpose();
-        Matrix dLdAttentionWeights = dLdContext.Transpose() * values.Transpose();
+        Matrix dLdValues = attentionWeights.Transpose() * dLdContext;
+        Matrix dLdAttentionWeights = dLdContext * values.Transpose();
         Matrix dLdAttentionScores = MathsUtils.BackpropSoftmax(dLdAttentionWeights, attentionWeights);
-        Matrix dLdQueries = keys * dLdAttentionScores.Transpose();
-        Matrix dLdKeys = queries * dLdAttentionScores;
+        Matrix dLdQueries = dLdAttentionScores.Transpose() * keys;
+        Matrix dLdKeys = dLdAttentionScores.Transpose() * queries;
 
         Matrix QueryWeightGrads = dLdQueries * input.Transpose();
         Matrix QueryBiasGrads = dLdQueries.RowWiseSum();
-        QueryProjection.SetWeightGradients(QueryWeightGrads);
+        QueryProjection.SetWeightGradients(QueryWeightGrads.Transpose());
         QueryProjection.SetBiasGradients(QueryBiasGrads);
 
         Matrix KeyWeightGrads = dLdKeys * input.Transpose();
         Matrix KeyBiasGrads = dLdKeys.RowWiseSum();
-        KeyProjection.SetWeightGradients(KeyWeightGrads);
+        KeyProjection.SetWeightGradients(KeyWeightGrads.Transpose());
         KeyProjection.SetBiasGradients(KeyBiasGrads);
 
         Matrix ValueWeightGrads = dLdValues * input.Transpose();
         Matrix ValueBiasGrads = dLdValues.RowWiseSum();
-        ValueProjection.SetWeightGradients(ValueWeightGrads);
+        ValueProjection.SetWeightGradients(ValueWeightGrads.Transpose());
         ValueProjection.SetBiasGradients(ValueBiasGrads);
     }
 

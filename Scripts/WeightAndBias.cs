@@ -51,7 +51,13 @@ class WeightBiasPair
         WeightOptimizer.Update();
         BiasOptimizer.Update();
     }
-    public void SetWeightGradients(Matrix gradients) => WeightGradients.SetMatrix(gradients);
+    public void SetWeightGradients(Matrix gradients)
+    {
+        // WeightGradients.PrintShape();
+        // gradients.PrintShape();
+        WeightGradients.SetMatrix(gradients);
+
+    }
     public void SetBiasGradients(Matrix gradients) => BiasGradients.SetMatrix(gradients);
     public Matrix GetWeights() => Weights;
 

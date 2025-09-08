@@ -16,8 +16,8 @@ public static class TestNetwork
         Console.WriteLine("inputs:");
         PrintMatrix(input.Transpose());
 
-        float loss = MathsUtils.CrossEntropyLoss(prediction, target);
-        Matrix grad = MathsUtils.CrossEntropyGradient(prediction, target);
+        float loss = MathsUtils.CrossEntropyLoss(prediction.Transpose(), target);
+        Matrix grad = MathsUtils.CrossEntropyGradient(prediction.Transpose(), target);
 
         Console.WriteLine($"\nLoss: {loss}");
         network.Backward(grad);

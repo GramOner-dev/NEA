@@ -99,21 +99,19 @@ public class Layer
         if (!isOutputLayer)
         {
             Matrix normalized = LayerNorm.GetNormalizedInputs();
-            Matrix dLdActivation = nextLayerGradients.Hadamard(normalized.Apply(MathsUtils.LeakyReLUDeriv));
-            dLdActivation.PrintShape();
+            Matrix dLdActivation = nextLayerGradients.Hadamard(normalized.Apply(MathsUtils.LeakyReLUDeriv).Transpose());
             dLdPreActivation = LayerNorm.Backward(dLdActivation);
-            dLdPreActivation.PrintShape();
-
         }
         else
         {
             dLdPreActivation = nextLayerGradients;
         }
         Matrix dLdWeights = dLdPreActivation.Transpose() * input.Transpose();
-        Weights.SetWeightGradients(dLdWeights);
-        Weights.SetBiasGradients(dLdPreActivation);
 
-        Matrix dLdInput = Weights.GetWeights().Transpose() * dLdPreActivation;
+        Weights.SetWeightGradients(dLdWeights.Transpose());
+        Weights.SetBiasGradients(dLdPreActivation.Transpose());
+
+        Matrix dLdInput = Weights.GetWeights() * dLdPreActivation.Transpose();
         return dLdInput;
     }
 

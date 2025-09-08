@@ -4,14 +4,15 @@ class Program
 {
     static void Main(string[] args)
     {
-        TestNetwork.Run();
+        // ModelInstanceTest.RunTest();
+        ModelInstanceTest.Run();
     }
 }
 
 public static class ModelInstanceTest
 {
 
-    public static void RunTest()
+    public static void Run()
     {
         int inputDim = 32;
         int headDim = 16;
@@ -28,8 +29,8 @@ public static class ModelInstanceTest
         Console.WriteLine("Prediction - ");
         PrintMatrix(prediction.Transpose());
 
-        float loss = MathsUtils.CrossEntropyLoss(prediction, target);
-        Matrix grad = MathsUtils.CrossEntropyGradient(prediction, target);
+        float loss = MathsUtils.CrossEntropyLoss(prediction.Transpose(), target);
+        Matrix grad = MathsUtils.CrossEntropyGradient(prediction.Transpose(), target);
 
         Console.WriteLine($"\nLoss - {loss}");
         instance.Backward(grad);
