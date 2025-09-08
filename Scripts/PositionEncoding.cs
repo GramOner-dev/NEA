@@ -1,4 +1,6 @@
 
+using System.Runtime.InteropServices;
+
 class PositionalEncoding
 {
     private Matrix Weights;
@@ -35,7 +37,6 @@ class PositionalEncoding
         }
 
         usedEncodings = new Matrix(encodingValues);
-
         Matrix output = input + usedEncodings;
         return output;
     }

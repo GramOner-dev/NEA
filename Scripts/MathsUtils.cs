@@ -126,20 +126,18 @@ public static class MathsUtils
     #region CrossEntropy
     public static float CrossEntropyLoss(Matrix probs, Matrix oneHotTarget)
     {
-        oneHotTarget = oneHotTarget.Transpose();
         int targetIndex = Array.IndexOf(oneHotTarget[0], 1f);
-        float predictedProb = probs[targetIndex, 0];
-        float loss = -MathF.Log(predictedProb + 1e-9f);
-        return loss;
+        float predictedProb = probs[0, targetIndex];
+        return -MathF.Log(predictedProb + 1e-9f);
     }
 
     public static Matrix CrossEntropyGradient(Matrix probs, Matrix oneHotTarget)
     {
-
+        probs = probs.Transpose();
         for (int i = 0; i < probs.GetLength(0); i++)
             probs[i, 0] -= oneHotTarget[i, 0];
 
-        return probs;
+        return probs.Transpose();
     }
     #endregion
 

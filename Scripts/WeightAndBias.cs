@@ -44,7 +44,7 @@ class WeightBiasPair
     public Matrix Forward(Matrix input)
     {
         Matrix BroadcastedBias = Matrix.BroadcastColumn(Bias, input.GetLength(1));
-        return input * Weights + BroadcastedBias;
+        return Weights.Transpose() * input + BroadcastedBias;
     }
     public void Update()
     {

@@ -4,7 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-
+        TestNetwork.Run();
     }
 }
 
@@ -13,13 +13,54 @@ public static class ModelInstanceTest
 
     public static void RunTest()
     {
-        int inputDim = 3;
+        int inputDim = 32;
         int headDim = 16;
         int maxSeqLen = 12;
-        int[] hiddenTopology = { 3, 5 };
-        int outputDim = 4;
+        int[] hiddenTopology = { 10, 5 };
+        int outputDim = 3;
         ModelInstance instance = new ModelInstance(inputDim, headDim, maxSeqLen, hiddenTopology, outputDim);
 
+        Matrix input = GenerateInput(32);
+        Matrix target = GenerateOneHotTarget(3);
 
+        Matrix logits = instance.Forward(input);
+        Matrix prediction = MathsUtils.Softmax(logits);
+        Console.WriteLine("Prediction - ");
+        PrintMatrix(prediction.Transpose());
+
+        float loss = MathsUtils.CrossEntropyLoss(prediction, target);
+        Matrix grad = MathsUtils.CrossEntropyGradient(prediction, target);
+
+        Console.WriteLine($"\nLoss - {loss}");
+        instance.Backward(grad);
     }
+    private static Matrix GenerateInput(int size)
+    {
+        float[] data = new float[size];
+        Random rand = new Random();
+        for (int i = 0; i < size; i++)
+            data[i] = (float)(rand.NextDouble() * 2 - 1);
+        return new Matrix(data).Transpose();
+    }
+
+    private static Matrix GenerateOneHotTarget(int size)
+    {
+        float[] data = new float[size];
+        Random rand = new Random();
+        int hotIndex = rand.Next(size);
+        data[hotIndex] = 1f;
+        return new Matrix(data).Transpose();
+    }
+    private static void PrintMatrix(Matrix matrix)
+    {
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                Console.Write($"{matrix[i, j]:0.0000} ");
+            }
+            Console.WriteLine();
+        }
+    }
+
 }

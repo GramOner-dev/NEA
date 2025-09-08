@@ -34,6 +34,8 @@ public class Matrix
     public Matrix(float[,] matrix)
     {
         this.matrix = matrix;
+        rowNum = matrix.GetLength(0);
+        colNum = matrix.GetLength(1);
     }
 
     public Matrix()
@@ -237,6 +239,19 @@ public class Matrix
     {
         Console.WriteLine($"shape - {rowNum}, {colNum}");
     }
+
     #endregion
+
+    public static void PrintMatrix(Matrix matrix)
+    {
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                Console.Write($"{matrix[i, j]:0.0000} ");
+            }
+            Console.WriteLine();
+        }
+    }
 
 }

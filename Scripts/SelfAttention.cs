@@ -45,7 +45,7 @@ public class SelfAttention
 
         attentionScores = ComputeAttentionScores(queries, keys);
         attentionWeights = MathsUtils.Softmax(attentionScores);
-        context = values * attentionWeights.Transpose();
+        context = attentionWeights.Transpose() * values;
         normed = LayerNorm.Forward(context);
 
         return MathsUtils.MeanPool(normed);
@@ -91,6 +91,6 @@ public class SelfAttention
     {
         Matrix KeyT = Key.Transpose();
         float dotProdScaling = (float)Math.Sqrt(Query.GetLength(0));
-        return (Query.Transpose() * KeyT).Apply(x => x / dotProdScaling);
+        return (Query * KeyT).Apply(x => x / dotProdScaling);
     }
 }

@@ -33,8 +33,9 @@ public class Network
         Matrix currentOutput = input;
 
         for (int i = 0; i < layers.Length; i++)
+        {
             currentOutput = layers[i].Forward(currentOutput);
-
+        }
         return currentOutput;
     }
 
@@ -81,14 +82,14 @@ public class Layer
         logits = Weights.Forward(input);
         if (!isOutputLayer)
         {
-            Matrix normalized = LayerNorm.Forward(logits);
+            Matrix normalized = LayerNorm.Forward(logits.Transpose());
             output = normalized.Apply(MathsUtils.LeakyReLU);
         }
         else
         {
             output = logits;
         }
-        return output;
+        return output.Transpose();
     }
 
     public Matrix Backward(Matrix nextLayerGradients)
@@ -99,14 +100,16 @@ public class Layer
         {
             Matrix normalized = LayerNorm.GetNormalizedInputs();
             Matrix dLdActivation = nextLayerGradients.Hadamard(normalized.Apply(MathsUtils.LeakyReLUDeriv));
-
+            dLdActivation.PrintShape();
             dLdPreActivation = LayerNorm.Backward(dLdActivation);
+            dLdPreActivation.PrintShape();
+
         }
         else
         {
             dLdPreActivation = nextLayerGradients;
         }
-        Matrix dLdWeights = dLdPreActivation * input.Transpose();
+        Matrix dLdWeights = dLdPreActivation.Transpose() * input.Transpose();
         Weights.SetWeightGradients(dLdWeights);
         Weights.SetBiasGradients(dLdPreActivation);
 

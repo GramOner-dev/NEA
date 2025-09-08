@@ -4,15 +4,17 @@ public static class TestNetwork
     public static void Run()
     {
         int[] hiddenLayersTopology = { 5, 5 };
-        Network network = new Network(32, hiddenLayersTopology, 3);
+        Network network = new Network(6, hiddenLayersTopology, 3);
 
-        Matrix input = GenerateInput(32);
+        Matrix input = GenerateInput(6);
         Matrix target = GenerateOneHotTarget(3);
 
         Matrix logits = network.Forward(input);
         Matrix prediction = MathsUtils.Softmax(logits);
         Console.WriteLine("Prediction:");
         PrintMatrix(prediction.Transpose());
+        Console.WriteLine("inputs:");
+        PrintMatrix(input.Transpose());
 
         float loss = MathsUtils.CrossEntropyLoss(prediction, target);
         Matrix grad = MathsUtils.CrossEntropyGradient(prediction, target);
@@ -61,7 +63,7 @@ public static class LayerNormTest
     {
         Console.WriteLine("LayerNormTest");
 
-        int seqLen = 4;
+        int seqLen = 1;
         int hiddenDim = 5;
         LayerNormalizer norm = new LayerNormalizer(hiddenDim);
 
