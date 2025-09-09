@@ -127,7 +127,6 @@ public static class MathsUtils
     public static float CrossEntropyLoss(Matrix probs, Matrix oneHotTarget)
     {
         int targetIndex = Array.IndexOf(oneHotTarget[0], 1f);
-        Console.WriteLine(targetIndex);
         float predictedProb = probs.Transpose()[targetIndex, 0];
         float loss = -MathF.Log(predictedProb + 1e-9f);
         return loss;
@@ -135,8 +134,6 @@ public static class MathsUtils
 
     public static Matrix CrossEntropyGradient(Matrix probs, Matrix oneHotTarget)
     {
-
-        // probs = probs.Transpose();
         for (int i = 0; i < probs.GetLength(0); i++)
             probs[i, 0] -= oneHotTarget[i, 0];
 

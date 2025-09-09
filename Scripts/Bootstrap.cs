@@ -4,8 +4,27 @@ class Program
 {
     static void Main(string[] args)
     {
-        // ModelInstanceTest.RunTest();
-        TestNetwork.Run();
+        AttentionTest.Run();
+    }
+}
+
+public static class AttentionTest
+{
+
+    public static void Run()
+    {
+        int inputDim = 3;
+        int maxSeqLen = 4;
+        int headDim = 5;
+        SelfAttention Transformer = new SelfAttention(inputDim, headDim, maxSeqLen);
+        float[,] input = new float[,] { { 3, 4, 1 }, { 3, 4, 1 } };
+        Matrix input = new Matrix();
+        Matrix correctOutputs = new Matrix([0f, 0f, 1f]);
+        int epochs = 20;
+        for (int i = 0; i < epochs; i++)
+        {
+            Matrix output = Transformer.Forward(input);
+        }
     }
 }
 

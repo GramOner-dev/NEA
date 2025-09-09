@@ -7,10 +7,9 @@ public static class TestNetwork
         int numOfOutputs = 3;
         int[] hiddenLayersTopology = { 5, 5 };
         Network network = new Network(numOfInputs, hiddenLayersTopology, numOfOutputs);
-        int epochs = 200;
+        int epochs = 10;
         Matrix input = new Matrix([3, 4, 1]);
         Matrix correctOutputs = new Matrix([0f, 0f, 1f]);
-
 
 
         for (int i = 0; i < epochs; i++)
@@ -23,9 +22,10 @@ public static class TestNetwork
             PrintMatrix(input.Transpose());
 
             float loss = MathsUtils.CrossEntropyLoss(prediction, correctOutputs);
-            Matrix grad = MathsUtils.CrossEntropyGradient(prediction, correctOutputs);
-
+            Matrix grad = MathsUtils.CrossEntropyGradient(prediction.Transpose(), correctOutputs.Transpose());
             Console.WriteLine($"\nLoss: {loss}");
+            Console.WriteLine("Gradient:");
+            PrintMatrix(grad);
             network.Backward(grad);
         }
 
@@ -91,8 +91,9 @@ public static class LayerNormTest
         PrintMatrix(input);
         Matrix gradOutput = new Matrix(seqLen, hiddenDim);
         gradOutput = gradOutput.Apply(x => (float)rand.NextDouble());
-
-        for (int i = 0; i < 100; i++)
+        Console.WriteLine("gradOutput-");
+        PrintMatrix(gradOutput);
+        for (int i = 0; i < 1; i++)
         {
             Matrix output = norm.Forward(input);
             Console.WriteLine("\noutput after LayerNorm:");

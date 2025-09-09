@@ -165,14 +165,14 @@ public class Matrix
         int colNum = matrixB.GetLength(1);
 
         if (this.rowNum != rowNum || this.colNum != colNum)
-            throw new ArgumentException("matrix dimensions must match for additio");
+            throw new ArgumentException("matrix dimensions must match for hadamard");
 
         Matrix result = new Matrix(this.rowNum, this.colNum);
         for (int i = 0; i < rowNum; i++)
         {
             for (int j = 0; j < colNum; j++)
             {
-                result[i, j] *= matrixB[i, j];
+                result[i, j] = this[i, j] * matrixB[i, j];
             }
         }
         return result;

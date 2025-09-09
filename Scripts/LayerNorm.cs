@@ -90,10 +90,6 @@ public class LayerNormalizer
             float stdDev = (float)Math.Sqrt(variance + epsilon);
 
             AccumulateGammaBetaGrads(gradOutRow, normRow, GammaGrads, BetaGrads);
-            Console.WriteLine("GammaGrads- ");
-            Matrix.PrintMatrix(GammaGrads);
-            Console.WriteLine("BetaGrads- ");
-            Matrix.PrintMatrix(BetaGrads);
             float[] gradNormalized = CalculateGradNormalized(gradOutRow);
 
             float gradVariance = CalculateGradVariance(row, mean, variance, gradNormalized);

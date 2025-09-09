@@ -81,7 +81,7 @@ public class Layer
     {
         this.input = input;
         //input.PrintShape();
-        Console.WriteLine("iteration");
+        // Console.WriteLine("iteration");
         logits = Weights.Forward(input);
         if (!isOutputLayer)
         {
@@ -102,14 +102,26 @@ public class Layer
         if (!isOutputLayer)
         {
             Matrix normalized = LayerNorm.GetNormalizedInputs();
-            Matrix dLdActivation = nextLayerGradients.Hadamard(normalized.Apply(MathsUtils.LeakyReLUDeriv).Transpose());
+            // Matrix.PrintMatrix(normalized);
+            // Console.WriteLine("njormalize");
+
+            // Matrix.PrintMatrix(normalized.Apply(MathsUtils.LeakyReLUDeriv).Transpose());
+            // Console.WriteLine("nextlayergradiuenst");
+            // Matrix.PrintMatrix(nextLayerGradients);
+            nextLayerGradients.PrintShape();
+            Matrix dLdActivation = nextLayerGradients.Transpose().Hadamard(normalized.Apply(MathsUtils.LeakyReLUDeriv));
+            // Console.WriteLine("-dldactivation");
+
+            // Matrix.PrintMatrix(dLdActivation);
+            dLdActivation.PrintShape();
+
             dLdPreActivation = LayerNorm.Backward(dLdActivation);
         }
         else
         {
             dLdPreActivation = nextLayerGradients;
         }
-        Matrix dLdWeights = dLdPreActivation.Transpose() * input;
+        Matrix dLdWeights = dLdPreActivation.Transpose() * input.Transpose();
 
         Weights.SetWeightGradients(dLdWeights.Transpose());
         Weights.SetBiasGradients(dLdPreActivation.Transpose());
