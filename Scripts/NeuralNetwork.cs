@@ -30,7 +30,7 @@ public class Network
 
     public Matrix Forward(Matrix input)
     {
-        Matrix currentOutput = input.Transpose();
+        Matrix currentOutput = input;
 
         for (int i = 0; i < layers.Length; i++)
         {
@@ -82,7 +82,7 @@ public class Layer
         this.input = input;
         //input.PrintShape();
         Console.WriteLine("iteration");
-        logits = Weights.Forward(input.Transpose());
+        logits = Weights.Forward(input);
         if (!isOutputLayer)
         {
             Matrix normalized = LayerNorm.Forward(logits.Transpose());

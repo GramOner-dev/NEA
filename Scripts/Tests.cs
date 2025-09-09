@@ -3,29 +3,32 @@ public static class TestNetwork
 {
     public static void Run()
     {
+        int numOfInputs = 3;
+        int numOfOutputs = 3;
         int[] hiddenLayersTopology = { 5, 5 };
-        Network network = new Network(6, hiddenLayersTopology, 3);
+        Network network = new Network(numOfInputs, hiddenLayersTopology, numOfOutputs);
         int epochs = 200;
+        Matrix input = new Matrix([3, 4, 1]);
+        Matrix correctOutputs = new Matrix([0f, 0f, 1f]);
 
-        for(int i = 0; i < epochs; i++)
+
+
+        for (int i = 0; i < epochs; i++)
         {
-            Matrix input = GenerateInput(6);
-            Matrix target = GenerateOneHotTarget(3);
-
-            Matrix logits = network.Forward(input);
+            Matrix logits = network.Forward(input.Transpose());
             Matrix prediction = MathsUtils.Softmax(logits);
             Console.WriteLine("Prediction:");
             PrintMatrix(prediction.Transpose());
             Console.WriteLine("inputs:");
             PrintMatrix(input.Transpose());
 
-            float loss = MathsUtils.CrossEntropyLoss(prediction.Transpose(), target);
-            Matrix grad = MathsUtils.CrossEntropyGradient(prediction.Transpose(), target);
+            float loss = MathsUtils.CrossEntropyLoss(prediction, correctOutputs);
+            Matrix grad = MathsUtils.CrossEntropyGradient(prediction, correctOutputs);
 
             Console.WriteLine($"\nLoss: {loss}");
             network.Backward(grad);
         }
-        
+
     }
 
     private static Matrix GenerateInput(int size)
@@ -84,29 +87,35 @@ public static class LayerNormTest
             }
         }
 
-        Console.WriteLine("ionput-");
+        Console.WriteLine("input-");
         PrintMatrix(input);
-
-
-        Matrix output = norm.Forward(input);
-        Console.WriteLine("\noutput after LayerNorm:");
-        PrintMatrix(output);
-
         Matrix gradOutput = new Matrix(seqLen, hiddenDim);
         gradOutput = gradOutput.Apply(x => (float)rand.NextDouble());
 
+        for (int i = 0; i < 100; i++)
+        {
+            Matrix output = norm.Forward(input);
+            Console.WriteLine("\noutput after LayerNorm:");
+            PrintMatrix(output);
 
-        Matrix gradInput = norm.Backward(gradOutput);
-        Console.WriteLine("\ninput gradient-:");
-        PrintMatrix(gradInput);
 
 
-        norm.UpdateWeights();
 
-        Console.WriteLine("\ngamma after update");
-        PrintMatrix(norm.Gamma);
-        Console.WriteLine("\nbeta after update");
-        PrintMatrix(norm.Beta);
+            Matrix gradInput = norm.Backward(gradOutput);
+            Console.WriteLine("dLdInput-:");
+            PrintMatrix(gradInput);
+            Console.WriteLine("dLdOutput-:");
+            PrintMatrix(gradOutput);
+
+
+            norm.UpdateWeights();
+
+            Console.WriteLine("\ngamma after update");
+            PrintMatrix(norm.Gamma);
+            Console.WriteLine("\nbeta after update");
+            PrintMatrix(norm.Beta);
+        }
+
 
     }
 

@@ -5,7 +5,7 @@ class Program
     static void Main(string[] args)
     {
         // ModelInstanceTest.RunTest();
-        LayerNormTest.Run();
+        TestNetwork.Run();
     }
 }
 

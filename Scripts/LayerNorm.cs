@@ -43,7 +43,7 @@ public class LayerNormalizer
     {
         int seqLen = input.GetLength(0);
         int hiddenDim = input.GetLength(1);
-        Console.WriteLine(seqLen);
+        // Console.WriteLine(seqLen);
 
         inputs = input;
         means = new float[seqLen];
@@ -68,12 +68,11 @@ public class LayerNormalizer
             output[i] = outputRow;
         }
 
-        return output.Transpose();
+        return output;
     }
 
     public Matrix Backward(Matrix gradOutput)
     {
-        gradOutput = gradOutput.Transpose();
         int seqLen = gradOutput.GetLength(0);
         int hiddenDim = gradOutput.GetLength(1);
 
@@ -83,17 +82,18 @@ public class LayerNormalizer
 
         for (int i = 0; i < seqLen; i++)
         {
-            //Console.WriteLine("---");
-            //Console.WriteLine(i);
             float[] row = inputs[i];
             float[] gradOutRow = gradOutput[i];
             float[] normRow = normalizedInputs[i];
-            //Console.WriteLine(means.Length);
             float mean = means[i];
             float variance = variances[i];
             float stdDev = (float)Math.Sqrt(variance + epsilon);
 
             AccumulateGammaBetaGrads(gradOutRow, normRow, GammaGrads, BetaGrads);
+            Console.WriteLine("GammaGrads- ");
+            Matrix.PrintMatrix(GammaGrads);
+            Console.WriteLine("BetaGrads- ");
+            Matrix.PrintMatrix(BetaGrads);
             float[] gradNormalized = CalculateGradNormalized(gradOutRow);
 
             float gradVariance = CalculateGradVariance(row, mean, variance, gradNormalized);
@@ -177,17 +177,11 @@ public class LayerNormalizer
 
     private float CalculateGradVariance(float[] row, float mean, float variance, float[] gradNormalized)
     {
-        //Console.WriteLine("----");
-        //Console.WriteLine(row.Length);
-        //Console.WriteLine(gradNormalized.Length);
 
 
         float gradVariance = 0f;
         for (int j = 0; j < row.Length; j++)
         {
-            //Console.WriteLine(j);
-            //Console.WriteLine(row.Length);
-            //Console.WriteLine(gradNormalized.Length);
             gradVariance += gradNormalized[j] * (row[j] - mean) * -0.5f * (float)Math.Pow(variance + epsilon, -1.5f);
         }
         return gradVariance;

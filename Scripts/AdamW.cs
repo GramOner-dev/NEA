@@ -58,6 +58,18 @@ public class AdamW
                 float unbiasedFirstMoment = getUnbiasedFirstMoment(firstMoments[i, j]);
                 float unbiasedSecondMoment = getUnbiasedSecondMoment(secondMoments[i, j]);
 
+                // Console.WriteLine("New adam update");
+                // Console.WriteLine("original param - ");
+                // Console.WriteLine(parameters[i, j]);
+                // Console.WriteLine("first moment - ");
+                // Console.WriteLine(unbiasedFirstMoment);
+
+                // Console.WriteLine("second moment - ");
+                // Console.WriteLine(unbiasedSecondMoment);
+                // Console.WriteLine("param update number");
+                // Console.WriteLine(unbiasedFirstMoment / (MathF.Sqrt(unbiasedSecondMoment)));
+
+
                 parameters[i, j] -= learningRate * (unbiasedFirstMoment / (MathF.Sqrt(unbiasedSecondMoment) + epsilon) + decayRate * parameters[i, j]);
             }
         }

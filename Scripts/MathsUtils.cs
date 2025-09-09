@@ -126,9 +126,9 @@ public static class MathsUtils
     #region CrossEntropy
     public static float CrossEntropyLoss(Matrix probs, Matrix oneHotTarget)
     {
-        oneHotTarget = oneHotTarget.Transpose();
         int targetIndex = Array.IndexOf(oneHotTarget[0], 1f);
-        float predictedProb = probs[targetIndex, 0];
+        Console.WriteLine(targetIndex);
+        float predictedProb = probs.Transpose()[targetIndex, 0];
         float loss = -MathF.Log(predictedProb + 1e-9f);
         return loss;
     }
