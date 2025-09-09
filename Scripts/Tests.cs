@@ -5,22 +5,27 @@ public static class TestNetwork
     {
         int[] hiddenLayersTopology = { 5, 5 };
         Network network = new Network(6, hiddenLayersTopology, 3);
+        int epochs = 200;
 
-        Matrix input = GenerateInput(6);
-        Matrix target = GenerateOneHotTarget(3);
+        for(int i = 0; i < epochs; i++)
+        {
+            Matrix input = GenerateInput(6);
+            Matrix target = GenerateOneHotTarget(3);
 
-        Matrix logits = network.Forward(input);
-        Matrix prediction = MathsUtils.Softmax(logits);
-        Console.WriteLine("Prediction:");
-        PrintMatrix(prediction.Transpose());
-        Console.WriteLine("inputs:");
-        PrintMatrix(input.Transpose());
+            Matrix logits = network.Forward(input);
+            Matrix prediction = MathsUtils.Softmax(logits);
+            Console.WriteLine("Prediction:");
+            PrintMatrix(prediction.Transpose());
+            Console.WriteLine("inputs:");
+            PrintMatrix(input.Transpose());
 
-        float loss = MathsUtils.CrossEntropyLoss(prediction.Transpose(), target);
-        Matrix grad = MathsUtils.CrossEntropyGradient(prediction.Transpose(), target);
+            float loss = MathsUtils.CrossEntropyLoss(prediction.Transpose(), target);
+            Matrix grad = MathsUtils.CrossEntropyGradient(prediction.Transpose(), target);
 
-        Console.WriteLine($"\nLoss: {loss}");
-        network.Backward(grad);
+            Console.WriteLine($"\nLoss: {loss}");
+            network.Backward(grad);
+        }
+        
     }
 
     private static Matrix GenerateInput(int size)

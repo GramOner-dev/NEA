@@ -30,10 +30,11 @@ public class Network
 
     public Matrix Forward(Matrix input)
     {
-        Matrix currentOutput = input;
+        Matrix currentOutput = input.Transpose();
 
         for (int i = 0; i < layers.Length; i++)
         {
+            input.PrintShape();
             currentOutput = layers[i].Forward(currentOutput);
         }
         return currentOutput;
@@ -79,7 +80,9 @@ public class Layer
     public Matrix Forward(Matrix input)
     {
         this.input = input;
-        logits = Weights.Forward(input);
+        //input.PrintShape();
+        Console.WriteLine("iteration");
+        logits = Weights.Forward(input.Transpose());
         if (!isOutputLayer)
         {
             Matrix normalized = LayerNorm.Forward(logits.Transpose());
@@ -106,7 +109,7 @@ public class Layer
         {
             dLdPreActivation = nextLayerGradients;
         }
-        Matrix dLdWeights = dLdPreActivation.Transpose() * input.Transpose();
+        Matrix dLdWeights = dLdPreActivation.Transpose() * input;
 
         Weights.SetWeightGradients(dLdWeights.Transpose());
         Weights.SetBiasGradients(dLdPreActivation.Transpose());

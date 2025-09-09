@@ -24,8 +24,13 @@ public class ModelInstance
 
     public Matrix Forward(Matrix input)
     {
+        //Matrix.PrintMatrix(input.Transpose());
         Matrix output = Transformer.Forward(input);
+        Console.WriteLine("attention output");
+        Matrix.PrintMatrix(output);
         output = NNetwork.Forward(output);
+        //Matrix.PrintMatrix(output.Transpose());
+
         return output;
     }
 

@@ -39,6 +39,7 @@ public class SelfAttention
     public Matrix Forward(Matrix input)
     {
         this.input = PosEnc.Forward(input);
+
         queries = QueryProjection.Forward(this.input);
         keys = KeyProjection.Forward(this.input);
         values = ValueProjection.Forward(this.input);
@@ -46,15 +47,17 @@ public class SelfAttention
         attentionScores = ComputeAttentionScores(queries, keys);
         attentionWeights = MathsUtils.Softmax(attentionScores);
         context = attentionWeights.Transpose() * values;
-        normed = LayerNorm.Forward(context);
+        
+        normed = LayerNorm.Forward(context.Transpose());
 
+        Matrix.PrintMatrix(normed);
         return MathsUtils.MeanPool(normed);
     }
 
     public void Backward(Matrix dLdOutput)
     {
         Matrix dLdNormed = MathsUtils.ExpandGradThroughMeanPool(dLdOutput, normed.GetLength(1));
-        Matrix dLdContext = LayerNorm.Backward(dLdNormed.Transpose());
+        Matrix dLdContext = LayerNorm.Backward(dLdNormed).Transpose();
 
         Matrix dLdValues = attentionWeights.Transpose() * dLdContext;
         Matrix dLdAttentionWeights = dLdContext * values.Transpose();
