@@ -30,11 +30,10 @@ public class Network
 
     public Matrix Forward(Matrix input)
     {
-        Matrix currentOutput = input;
+        Matrix currentOutput = input.Transpose();
 
         for (int i = 0; i < layers.Length; i++)
         {
-            input.PrintShape();
             currentOutput = layers[i].Forward(currentOutput);
         }
         return currentOutput;
