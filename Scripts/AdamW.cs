@@ -13,7 +13,7 @@ public class AdamW
     private Matrix secondMoments;
     private Matrix parameters;
     private Matrix gradients;
-    public AdamW(Matrix parameters, Matrix gradients, float lr = 0.001f, float beta1 = 0.9f, float beta2 = 0.999f, float epsilon = 1e-8f, float decayRate = 0.01f)
+    public AdamW(Matrix parameters, Matrix gradients, float lr = 0.01f, float beta1 = 0.9f, float beta2 = 0.999f, float epsilon = 1e-8f, float decayRate = 0.01f)
     {
         learningRate = lr;
         this.beta1 = beta1;
@@ -51,7 +51,6 @@ public class AdamW
         {
             for (int j = 0; j < parameters.GetLength(1); j++)
             {
-
                 firstMoments[i, j] = getUpdatedFirstMoment(firstMoments[i, j], gradients[i, j]);
                 secondMoments[i, j] = getUpdatedSecondMoment(secondMoments[i, j], gradients[i, j]);
 

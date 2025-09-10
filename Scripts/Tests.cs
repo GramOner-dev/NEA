@@ -7,7 +7,7 @@ public static class TestNetwork
         int numOfOutputs = 3;
         int[] hiddenLayersTopology = { 5, 5 };
         Network network = new Network(numOfInputs, hiddenLayersTopology, numOfOutputs);
-        int epochs = 10;
+        int epochs = 1000;
         Matrix input = new Matrix([3, 4, 1]);
         Matrix correctOutputs = new Matrix([0f, 0f, 1f]);
 
@@ -20,6 +20,8 @@ public static class TestNetwork
             PrintMatrix(prediction.Transpose());
             Console.WriteLine("inputs:");
             PrintMatrix(input.Transpose());
+            Console.WriteLine("correctOutput:");
+            PrintMatrix(correctOutputs.Transpose());
 
             float loss = MathsUtils.CrossEntropyLoss(prediction, correctOutputs);
             Matrix grad = MathsUtils.CrossEntropyGradient(prediction.Transpose(), correctOutputs.Transpose());

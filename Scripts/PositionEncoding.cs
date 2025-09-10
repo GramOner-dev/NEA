@@ -24,7 +24,7 @@ class PositionalEncoding
 
     public Matrix Forward(Matrix input)
     {
-        int seqLen = input.GetLength(1);
+        int seqLen = input.GetLength(0);
 
         float[,] encodingValues = new float[inputDim, seqLen];
 
@@ -37,8 +37,8 @@ class PositionalEncoding
         }
 
         usedEncodings = new Matrix(encodingValues);
-        Matrix output = input + usedEncodings;
-        return output;
+        Matrix output = input.Transpose() + usedEncodings;
+        return output; //inputDim(rows) x seqLen(cols)
     }
 
     public Matrix Backward(Matrix gradOutput)

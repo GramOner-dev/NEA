@@ -73,6 +73,8 @@ public class LayerNormalizer
 
     public Matrix Backward(Matrix gradOutput)
     {
+        // Console.WriteLine("Layernorm backward shape");
+        // gradOutput.PrintShape();
         int seqLen = gradOutput.GetLength(0);
         int hiddenDim = gradOutput.GetLength(1);
 

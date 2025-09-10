@@ -108,12 +108,12 @@ public class Layer
             // Matrix.PrintMatrix(normalized.Apply(MathsUtils.LeakyReLUDeriv).Transpose());
             // Console.WriteLine("nextlayergradiuenst");
             // Matrix.PrintMatrix(nextLayerGradients);
-            nextLayerGradients.PrintShape();
+            // nextLayerGradients.PrintShape();
             Matrix dLdActivation = nextLayerGradients.Transpose().Hadamard(normalized.Apply(MathsUtils.LeakyReLUDeriv));
             // Console.WriteLine("-dldactivation");
 
             // Matrix.PrintMatrix(dLdActivation);
-            dLdActivation.PrintShape();
+            // dLdActivation.PrintShape();
 
             dLdPreActivation = LayerNorm.Backward(dLdActivation);
         }

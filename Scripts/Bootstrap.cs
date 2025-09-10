@@ -4,6 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        // AttentionTest.Run();
         AttentionTest.Run();
     }
 }
@@ -17,14 +18,59 @@ public static class AttentionTest
         int maxSeqLen = 4;
         int headDim = 5;
         SelfAttention Transformer = new SelfAttention(inputDim, headDim, maxSeqLen);
-        float[,] input = new float[,] { { 3, 4, 1 }, { 3, 4, 1 } };
-        Matrix input = new Matrix();
-        Matrix correctOutputs = new Matrix([0f, 0f, 1f]);
+        Matrix input = new Matrix([3, 4, 1]);
+        Matrix correctOutputs = new Matrix([0f, 0f, 0f, 0f, 1f]);
         int epochs = 20;
         for (int i = 0; i < epochs; i++)
         {
-            Matrix output = Transformer.Forward(input);
+            Matrix logits = Transformer.Forward(input);
+            Console.WriteLine("logits:");
+            Matrix.PrintMatrix(logits);
+            Console.WriteLine("Correct Output:");
+            Matrix.PrintMatrix(correctOutputs);
+            float loss = MSE(logits, correctOutputs.Transpose());
+            Matrix grad = MSEGradient(logits, correctOutputs.Transpose());
+            Console.WriteLine("Loss:");
+            Console.WriteLine(loss);
+            Transformer.Backward(grad);
+
         }
+    }
+    public static float MSE(Matrix predictions, Matrix targets)
+    {
+        int rows = predictions.GetLength(0);
+        int cols = predictions.GetLength(1);
+
+        float sum = 0f;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                float diff = predictions[i, j] - targets[i, j];
+                sum += diff * diff;
+            }
+        }
+
+        return sum / (rows * cols);
+    }
+
+    public static Matrix MSEGradient(Matrix predictions, Matrix targets)
+    {
+        int rows = predictions.GetLength(0);
+        int cols = predictions.GetLength(1);
+
+        Matrix grad = new Matrix(rows, cols);
+        float scale = 2f / (rows * cols);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                grad[i, j] = scale * (predictions[i, j] - targets[i, j]);
+            }
+        }
+
+        return grad;
     }
 }
 

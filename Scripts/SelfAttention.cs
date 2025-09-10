@@ -47,16 +47,16 @@ public class SelfAttention
         attentionScores = ComputeAttentionScores(queries, keys);
         attentionWeights = MathsUtils.Softmax(attentionScores);
         context = attentionWeights.Transpose() * values;
-        
+
         normed = LayerNorm.Forward(context.Transpose());
 
-        Matrix.PrintMatrix(normed);
-        return MathsUtils.MeanPool(normed);
+        // Matrix.PrintMatrix(normed);
+        return MathsUtils.MeanPool(normed.Transpose());
     }
 
     public void Backward(Matrix dLdOutput)
     {
-        Matrix dLdNormed = MathsUtils.ExpandGradThroughMeanPool(dLdOutput, normed.GetLength(1));
+        Matrix dLdNormed = MathsUtils.ExpandGradThroughMeanPool(dLdOutput, normed.GetLength(0)).Transpose();
         Matrix dLdContext = LayerNorm.Backward(dLdNormed).Transpose();
 
         Matrix dLdValues = attentionWeights.Transpose() * dLdContext;
@@ -79,9 +79,10 @@ public class SelfAttention
         Matrix ValueBiasGrads = dLdValues.RowWiseSum();
         ValueProjection.SetWeightGradients(ValueWeightGrads.Transpose());
         ValueProjection.SetBiasGradients(ValueBiasGrads);
+        UpdateWeights();
     }
 
-    public void Update()
+    public void UpdateWeights()
     {
         QueryProjection.Update();
         KeyProjection.Update();
