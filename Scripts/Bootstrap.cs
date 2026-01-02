@@ -26,7 +26,7 @@ public static class ModelInstanceTest
 
         Matrix input = new Matrix([3, 4, 1]);
         Matrix correctOutputs = new Matrix([0f, 0f, 0f, 0f, 1f]);
-        int epochs = 20;
+        int epochs = 200;
         for (int i = 0; i < epochs; i++)
         {
             Matrix AttentionLogits = Transformer.Forward(input);
