@@ -9,6 +9,7 @@ using System.Threading;
 interface IMenuNavigator
 {
     void ShowMenu(int id);
+    void GoBack();
     void ExitProgram();
 }
 
@@ -232,6 +233,7 @@ class SaveButton : Button
 
     }
 }
+
 
 
 // class MenuButton : Button
